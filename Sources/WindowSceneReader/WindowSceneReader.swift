@@ -15,7 +15,8 @@ import UIKit
 /// This view reads the current window scene and makes the window scene
 /// available in the `Envionment`
 public struct WindowSceneReader<Content>: View where Content: View {
-    @ViewBuilder var content: (UIWindowScene) -> Content
+    public var content: (UIWindowScene) -> Content
+    
     @State private var windowScene: UIWindowScene?
     
     public var body: some View {
@@ -30,48 +31,23 @@ public struct WindowSceneReader<Content>: View where Content: View {
     /// Creates an instance that can reads the current window scene
     ///
     /// - Parameter content: The reader's content where the window scene is accessible
-    public init(@ViewBuilder content: @escaping (UIWindowScene) -> Content) {
+    @inlinable public init(@ViewBuilder content: @escaping (UIWindowScene) -> Content) {
         self.content = content
     }
 }
 
-struct Preview: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-    
-    struct ContentView: View {
-        var body: some View {
-            NavigationView {
-                List {
-                    NavigationLink {
-                        DetailView()
-                    } label: {
-                        Text("Detail")
-                    }
-                    
-                    Button {
-                    } label: {
-                        Text("Some Button")
-                    }
-                }
-                .navigationBarTitle("Demo")
+#Preview {
+    WindowSceneReader { windowScene in
+        VStack {
+            VStack(alignment: .leading) {
+                Text("WindowScene")
+                    .foregroundColor(.primary)
+                Text(windowScene.debugDescription)
+                    .foregroundColor(.secondary)
             }
+            .multilineTextAlignment(.leading)
         }
-    }
-    
-    struct DetailView: View {
-        var body: some View {
-            WindowSceneReader { _ in
-                List {
-                    Button {
-                    } label: {
-                        Text("Some Button")
-                    }
-                }
-            }
-            .navigationBarTitle("Detail View")
-        }
+        .padding()
     }
 }
 #endif
